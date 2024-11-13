@@ -1,0 +1,49 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Weapon : MonoBehaviour //clase padre
+{
+    //El objeto Sistema de Partículas (Particle System) que creará los agujeros de las balas
+    [SerializeField] protected GameObject particle;
+    //La cámara (nos ayudará a encontrar el centro de la pantalla)
+    [SerializeField] protected GameObject cam;
+    //El modo de disparo del arma
+    protected bool auto = false;
+    //El intervalo entre los disparos y el contador que lleva el tiempo
+    protected float cooldown = 0;
+    protected  float timer = 0;
+
+    //Al arrancar el juego, definimos el contador para que sea igual al tiempo de enfriamiento del arma
+    //Esto nos asegura que se produzca el primer disparo sin demora
+    private void Start()
+    {
+        timer = cooldown;
+    }
+    private void Update()
+    {
+        //Arrancando el contador
+        timer += Time.deltaTime;
+        //Si el jugador tiene el botón izquierdo del mouse presionado, llamamos la función Shoot
+        if (Input.GetMouseButton(0))
+        {
+            Shoot();
+        }
+    }
+    //Revisando si el arma puede ser disparada o no
+    public void Shoot()
+    {
+        if (Input.GetMouseButtonDown(0) || auto)
+        {
+            if (timer > cooldown)
+            {
+                OnShoot();
+                timer = 0;
+            }
+        }
+    }
+    //Y esta función definirá qué pasa cuando se dispare el arma. Ya que tiene los modificadores protected y virtual, las clases que se derivan de esta podrán definir su propia lógica de disparo
+    protected virtual void OnShoot()
+    {
+    }
+}
